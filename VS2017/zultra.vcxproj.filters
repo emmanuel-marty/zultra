@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Fichiers sources">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Fichiers d%27en-tête">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Fichiers de ressources">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Fichiers sources\lib">
+      <UniqueIdentifier>{39e32732-82d5-4cab-80e5-39c04c758435}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\lib\huffman">
+      <UniqueIdentifier>{bf10d1e8-4c18-4eff-b231-69d21d4f2c17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\lib\libdivsufsort">
+      <UniqueIdentifier>{a858de66-bef8-44b2-aaba-99ab69a3a806}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\lib\libdivsufsort\include">
+      <UniqueIdentifier>{8ffd119e-b205-4e17-8c23-b945711b5e16}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\lib\libdivsufsort\lib">
+      <UniqueIdentifier>{7b58e9ea-8419-4a92-b23b-52a66da2bca3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\tool">
+      <UniqueIdentifier>{9e0187a8-e52e-4604-b0d3-e7a84e42187f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Fichiers sources\tool\zlib">
+      <UniqueIdentifier>{2826655e-02bd-4457-8a1e-fc9285bba1f5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h">
+      <Filter>Fichiers d%27en-tête</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libdivsufsort\include\divsufsort.h">
+      <Filter>Fichiers sources\lib\libdivsufsort\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libdivsufsort\include\divsufsort_private.h">
+      <Filter>Fichiers sources\lib\libdivsufsort\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\huffman\bitwriter.h">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\huffman\huffencoder.h">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libdivsufsort\include\divsufsort_config.h">
+      <Filter>Fichiers sources\lib\libdivsufsort\include</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\dictionary.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\format.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\frame.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\matchfinder.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\huffman\huffutils.h">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\private.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\libzultra.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\blockdeflate.h">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\libdivsufsort\lib\divsufsort.c">
+      <Filter>Fichiers sources\lib\libdivsufsort\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libdivsufsort\lib\sssort.c">
+      <Filter>Fichiers sources\lib\libdivsufsort\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libdivsufsort\lib\trsort.c">
+      <Filter>Fichiers sources\lib\libdivsufsort\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\huffman\bitwriter.c">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\huffman\huffencoder.c">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libdivsufsort\lib\divsufsort_utils.c">
+      <Filter>Fichiers sources\lib\libdivsufsort\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\dictionary.c">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\frame.c">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\matchfinder.c">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zultra.c">
+      <Filter>Fichiers sources\tool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\adler32.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\compress.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\crc32.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\deflate.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\gzclose.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\gzlib.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\gzread.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\gzwrite.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\infback.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\inffast.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\inflate.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\inftrees.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\trees.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\uncompr.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\tool\zlib\zutil.c">
+      <Filter>Fichiers sources\tool\zlib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\huffman\huffutils.c">
+      <Filter>Fichiers sources\lib\huffman</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\libzultra.c">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\blockdeflate.c">
+      <Filter>Fichiers sources\lib</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
