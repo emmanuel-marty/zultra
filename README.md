@@ -47,7 +47,7 @@ Inspirations:
 * The suffix array intervals in [Wimlib](https://wimlib.net/git/?p=wimlib;a=tree) by Eric Biggers.
 * The block splitting heuristics in [libdeflate](https://github.com/ebiggers/libdeflate), also by Eric Biggers.
 * Some general LZ-huffman ideas in [linzip2](https://glinscott.github.io/lz/index.html) by Gary Linscott.
-* Fast huffman codelength building from [this research paper]http://hjemmesider.diku.dk/~jyrki/Paper/WADS95.pdf by Moffat and Katajainen.
+* Fast huffman codelength building from [this research paper](http://hjemmesider.diku.dk/~jyrki/Paper/WADS95.pdf) by Moffat and Katajainen.
 
 License:
 
