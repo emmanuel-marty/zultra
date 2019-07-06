@@ -3,10 +3,10 @@ zultra -- fast near-optimal deflate/zlib/gzip compression
 
 zultra is a command-line tool and a compression-only library that produces compressed bitstreams in the zlib (RFC 1950), deflate (RFC 1951), and gzip (RFC 1952) formats, fully compatible with exisiting tools and libraries using these formats, such as zip and png.
 
-The zultra library creates near-optimal compressed bitstreams with a ratio similar to zopfli, at approximately 25-50% of the speed of zlib compression level 9. 
+The zultra library creates near-optimal compressed bitstreams with a ratio similar to zopfli (gaining around 4% on zlib), at approximately 25-50% of the speed of zlib compression level 9, on average. 
 
 zultra is meant to replace zlib compression in scenarios where zopfli can't be used:
-* too computationally expensive. zultra compresses to within 0,02% of zopfli, 10 times faster, on average
+* too computationally expensive. zultra compresses to within 0,1% of zopfli, 10 times faster, on average.
 * a streaming API is needed. zultra provides an API similar to zlib's deflate.
 
 zultra is written in plain C. The maximum block size (used to optimize the output) can be tuned, for instance for on-device compression scenarios.
