@@ -21,7 +21,7 @@
 
 /*
  * Uses the libdivsufsort library Copyright (c) 2003-2008 Yuta Mori
- * Uses the xxhash implementation by Stephan Brumme. https://create.stephan-brumme.com/xxhash/
+ * Uses the crc32 implementation by Stephan Brumme. https://create.stephan-brumme.com/crc32/
  *
  * Inspired by zlib by Jean-loup Gailly and Mark Adler. https://github.com/madler/zlib
  * Also inspired by Zopfli by Lode Vandevenne and Jyrki Alakuijala. https://github.com/google/zopfli

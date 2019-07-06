@@ -22,7 +22,7 @@
 
 /*
  * Uses the libdivsufsort library Copyright (c) 2003-2008 Yuta Mori
- * Uses the xxhash implementation by Stephan Brumme. https://create.stephan-brumme.com/xxhash/
+ * Uses the crc32 implementation by Stephan Brumme. https://create.stephan-brumme.com/crc32/
  *
  * Inspired by zlib by Jean-loup Gailly and Mark Adler. https://github.com/madler/zlib
  * Also inspired by Zopfli by Lode Vandevenne and Jyrki Alakuijala. https://github.com/google/zopfli
@@ -648,6 +648,16 @@ static int zultra_compressor_split_subblock_recursive(zultra_compressor_t *pComp
    if (nDepth >= 6 || nInDataSize < 8192)
       return 0;
 
+   /**
+    * The block splitting heuristics are inspired by a model by Eric Bigger in libdeflate.
+    *
+    * Notable improvements, from highest to lowest impact on the compression ratio:
+    * (1) when we find what looks like a good split point, we evaluate the 'to the left'+'to the right' vs. total encoding costs
+    *     using the huffman codelengths produced by a greedy parse. we pick the most beneficial outcome.
+    * (2) the split is performed after the last good point, before we detect that the measured distribution has drifted too
+    *     far from the expectations. 
+    * (3) we measure more data points.
+    */
    memset(stat, 0, 18 * sizeof(unsigned int));
    memset(newStat, 0, 18 * sizeof(unsigned int));
 
