@@ -16,7 +16,7 @@ Example benchmarks (using lzbench 1.7.3):
     zultra 1.0.0             3.38 MB/s   269 MB/s    35029585  35.03 enwik8
     zlib 1.2.11 -9             16 MB/s   253 MB/s    36475792  36.48 enwik8
     libdeflate 1.0 -12       6.55 MB/s   581 MB/s    35100568  35.10 enwik8
-    zopfli 1.0.0             0.38 MB/s   264 MB/s    34966066  34.97 enwik8
+    zopfli 1.0.2             0.38 MB/s   264 MB/s    34966066  34.97 enwik8
 
     mozilla, silesia corpus (51220480)
 
@@ -25,7 +25,7 @@ Example benchmarks (using lzbench 1.7.3):
     zultra 1.0.0             3.48 MB/s   277 MB/s    18280189  35.69 mozilla
     zlib 1.2.11 -9           6.70 MB/s   279 MB/s    19044396  37.18 mozilla
     libdeflate 1.0 -12       7.65 MB/s   586 MB/s    18308548  35.74 mozilla
-    zopfli 1.0.0             0.28 MB/s   279 MB/s    18317347  35.76 mozilla
+    zopfli 1.0.2             0.28 MB/s   279 MB/s    18317347  35.76 mozilla
 
     pariah.utx (24375895)
 
@@ -34,7 +34,7 @@ Example benchmarks (using lzbench 1.7.3):
     zultra 1.0.0             3.75 MB/s   302 MB/s     7892356  32.38 pariah.utx
     zlib 1.2.11 -9           3.84 MB/s   301 MB/s     8214524  33.70 pariah.utx
     libdeflate 1.0 -12       7.05 MB/s   675 MB/s     7914073  32.47 pariah.utx
-    zopfli 1.0.0             0.16 MB/s   302 MB/s     7886453  32.35 pariah.utx
+    zopfli 1.0.2             0.16 MB/s   302 MB/s     7886453  32.35 pariah.utx
 
     bootstrap.min.js (48944)
 
@@ -43,7 +43,7 @@ Example benchmarks (using lzbench 1.7.3):
     zultra 1.0.0             3.15 MB/s   353 MB/s       12599  25.74 bootstrap.min.js
     zlib 1.2.11 -9             32 MB/s   355 MB/s       13034  26.63 bootstrap.min.js
     libdeflate 1.0 -12       5.92 MB/s   881 MB/s       12617  25.78 bootstrap.min.js
-    zopfli 1.0.0             0.42 MB/s   345 MB/s       12599  25.74 bootstrap.min.js
+    zopfli 1.0.2             0.42 MB/s   345 MB/s       12599  25.74 bootstrap.min.js
 
 Inspirations:
 
