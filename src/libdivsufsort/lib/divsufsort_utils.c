@@ -24,7 +24,7 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "divsufsort_private.h"
+#include "../include/divsufsort_private.h"
 
 
 /*- Private Function -*/

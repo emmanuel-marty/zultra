@@ -37,7 +37,7 @@
 #include "blockdeflate.h"
 #include "format.h"
 #include "private.h"
-#include "huffutils.h"
+#include "huffman/huffutils.h"
 
 /* Tables for mapping every possible match offset to a huffman symbol, base value for the symbol, and number of extra bits required to encode the displacement.
  * In order to avoid a large table, values for offsets from 257 to 32768 are encoded in steps of 7 bits as the number of extra bits required starts at 7 for offset 257 */

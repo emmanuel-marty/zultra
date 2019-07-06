@@ -46,7 +46,11 @@ extern "C" {
 typedef struct _zultra_compressor_s zultra_compressor_t;
 
 /** High level compression status */
-typedef enum _zultra_stream_e {
+typedef enum _zultra_stream_e
+#if defined(__cplusplus) && __cplusplus > 199711L
+   : int
+#endif
+{
    ZULTRA_OK = 0,                          /**< Success */
    ZULTRA_ERROR_SRC,                       /**< Error reading input */
    ZULTRA_ERROR_DST,                       /**< Error reading output */

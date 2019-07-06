@@ -421,7 +421,7 @@ int zultra_frame_encode_header(unsigned char *pFrameData, const int nMaxFrameDat
          if (pDictionaryData && nDictionarySize) {
             unsigned int nDictChecksum = zultra_update_adler32(0, NULL, 0);
 
-            nDictChecksum = zultra_update_adler32(nDictChecksum, pDictionaryData, nDictionarySize);
+            nDictChecksum = zultra_update_adler32(nDictChecksum, (const unsigned char*)pDictionaryData, nDictionarySize);
 
             /* Big-endian adler32 for the dictionary */
             pFrameData[5] = nDictChecksum & 0xff;
@@ -474,7 +474,7 @@ zultra_frame_checksum_t zultra_frame_update_checksum(zultra_frame_checksum_t nCh
    if (nFlags & ZULTRA_FLAG_GZIP_FRAMING)
       return zultra_frame_crc32_4bytes(pData, nDataSize, nChecksum);
    else if (nFlags & ZULTRA_FLAG_ZLIB_FRAMING)
-      return zultra_update_adler32(nChecksum, pData, nDataSize);
+      return zultra_update_adler32(nChecksum, (const unsigned char*)pData, nDataSize);
    else
       return 0;
 }

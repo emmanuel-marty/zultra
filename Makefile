@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-O3 -g -fomit-frame-pointer -Isrc/libdivsufsort/include -Isrc/xxhash -Isrc/huffman -Isrc -Itool -Itool/zlib -DNDEBUG
+CFLAGS=-O3 -g -fomit-frame-pointer -Isrc -Itool -Itool/zlib -DNDEBUG
 OBJDIR=obj
 LDFLAGS=
 

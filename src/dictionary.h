@@ -41,6 +41,11 @@ extern "C" {
 #endif
 
 /* Forward declaration */
+enum _zultra_stream_e
+#if defined(__cplusplus) && __cplusplus > 199711L
+: int
+#endif
+;
 typedef enum _zultra_stream_e zultra_status_t;
 
 /**

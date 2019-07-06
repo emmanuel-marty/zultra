@@ -24,7 +24,7 @@
 #include <string.h>
 #include "huffencoder.h"
 #include "bitwriter.h"
-#include "format.h"
+#include "../format.h"
 
 /** Code lengths table symbol ordering (RFC 1951 section 3.2.7) */
 static const unsigned short zultra_huffman_encoder_codelen_sym_idx[NCODELENSYMS] = { 16, 17, 18, 0, 8, 7, 9, 6, 10, 5, 11, 4, 12, 3, 13, 2, 14, 1, 15 };

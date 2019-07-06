@@ -34,9 +34,9 @@
 #ifndef _PRIVATE_H
 #define _PRIVATE_H
 
-#include "divsufsort.h"
-#include "huffencoder.h"
-#include "bitwriter.h"
+#include "libdivsufsort/include/divsufsort.h"
+#include "huffman/huffencoder.h"
+#include "huffman/bitwriter.h"
 
 #define LCP_BITS 9
 #define LCP_MAX ((1LL<<LCP_BITS) - 1)
