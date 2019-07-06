@@ -5,7 +5,7 @@ zultra is a command-line tool and a compression-only library that produces compr
 
 The zultra library creates near-optimal compressed bitstreams with a ratio similar to zopfli (gaining around 4% on zlib), at approximately 25-50% of the speed of zlib compression level 9, on average. 
 
-zultra is written in plain C. The maximum block size (used to optimize the output) can be tuned, for instance for on-device compression scenarios.
+zultra is written in plain C. The maximum block size (used to optimize the output) can be tuned, for instance for on-device compression scenarios. The compressor fully supports streaming with an API very similar to zlib. 
 
 Example benchmarks (using lzbench 1.7.3):
 
