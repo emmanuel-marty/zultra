@@ -45,6 +45,7 @@
 #define  CSTATE_HEADER_EMITTED          2    /**< Compressed bitstream header emitted */
 #define  CSTATE_FINALIZED_COMPRESSION   4    /**< All blocks compressed, ready to emit footer */
 #define  CSTATE_FOOTER_EMITTED          8    /**< Compressed bitstream footer emitted */
+#define  CSTATE_STREAM_ENDED            16   /**< Footer flushed out, complete stream consumed */
 
 /**
  * Default memory allocator
@@ -200,6 +201,9 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
    zultra_compressor_t *pCompressor = pStream->state;
    zultra_status_t nError = ZULTRA_OK;
 
+   if (pCompressor->compression_state & CSTATE_STREAM_ENDED)
+      return ZULTRA_ERROR_COMPRESSION;
+
    do {
       const int nMaxBlockSize = pCompressor->max_block_size;
       const int nMaxSplits = MAX_SPLITS;
@@ -207,14 +211,17 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
       if ((pCompressor->compression_state & CSTATE_HEADER_EMITTED) == 0) {
          pCompressor->compression_state |= CSTATE_HEADER_EMITTED;
 
+         /* Emit the header, if the chosen format has one */
          int nHeaderSize = zultra_frame_encode_header(pCompressor->frame_buffer, 16, pCompressor->flags, pCompressor->dictionary_data, pCompressor->dictionary_size);
          if (nHeaderSize < 0)
             nError = ZULTRA_ERROR_COMPRESSION;
          else {
+            /* The header bytes are now pending to be consumed by the caller */
             pCompressor->cur_frame_index = 0;
             pCompressor->pending_frame_bytes = nHeaderSize;
          }
 
+         /* Initialize the appropriate checksum for the chosen format */
          pStream->adler = zultra_frame_init_checksum(pCompressor->flags);
       }
 
@@ -225,6 +232,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
             if (pStream->avail_out) {
                size_t nMaxFrameOutBytes = pStream->avail_out;
 
+               /* Copy header or footer bytes to the caller */
                if (nMaxFrameOutBytes > pCompressor->pending_frame_bytes)
                   nMaxFrameOutBytes = pCompressor->pending_frame_bytes;
                memcpy(pStream->next_out, pCompressor->frame_buffer + pCompressor->cur_frame_index, nMaxFrameOutBytes);
@@ -247,6 +255,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
       if (!nError && !pCompressor->pending_frame_bytes && !pCompressor->pending_out_bytes) {
          size_t nMaxInBytes = pStream->avail_in;
 
+         /* Copy original (input) bytes from the caller */
          if (nMaxInBytes > (nMaxBlockSize - pCompressor->cur_in_bytes))
             nMaxInBytes = nMaxBlockSize - pCompressor->cur_in_bytes;
          memcpy(pCompressor->in_data + HISTORY_SIZE + pCompressor->cur_in_bytes, pStream->next_in, nMaxInBytes);
@@ -260,11 +269,13 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
          if ((pCompressor->cur_in_bytes >= nMaxBlockSize && pStream->avail_in) || nDoFinalize) {
             int nInDataSize;
 
+            /* We have received enough input data, or this is the last of the data, compress now */
             nInDataSize = (int)pCompressor->cur_in_bytes;
 
             if (nInDataSize > 0) {
                zultra_bitwriter_t blockBitWriter;
 
+               /* Update the appropriate checksum for the chosen format */
                pStream->adler = zultra_frame_update_checksum(pStream->adler, pCompressor->in_data + HISTORY_SIZE, nInDataSize, pCompressor->flags);
 
                pCompressor->dictionary_size = 0;
@@ -272,6 +283,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
 
                int nCompressionResult;
 
+               /* Parse input data, find matches */
                if (zultra_build_suffix_array(pStream->state, pCompressor->in_data + HISTORY_SIZE - pCompressor->previous_block_size, pCompressor->previous_block_size + nInDataSize))
                   nError = ZULTRA_ERROR_COMPRESSION;
                else {
@@ -287,11 +299,13 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
                   int nSplitOffset[MAX_SPLITS];
                   int nSplitArraySize;
 
+                  /* Find split points, where it is most beneficial to create seperate blocks with new huffman codes */
                   nSplitArraySize = zultra_block_split(pStream->state, pCompressor->in_data + HISTORY_SIZE - pCompressor->previous_block_size, pCompressor->previous_block_size + nInStart, nInDataSize - nInStart,
                      nMaxSplits, nSplitOffset);
                   if (nSplitArraySize < 0)
                      nError = ZULTRA_ERROR_COMPRESSION;
                   else {
+                     /* Loop through all blocks to compress */
                      while (nInStart < nInDataSize && !nError) {
                         int nBlockSize, nStaticCost = 0, nDynamicCost = 0;
                         int nIsFinal;
@@ -299,6 +313,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
 
                         nBlockSize = nSplitOffset[nNumSplits++] - (nInStart + pCompressor->previous_block_size);
 
+                        /* Do an initial greedy parse, generate huffman code lengths from it, and determine if using static huffman tables would result in a smaller input than the generated, dynamic code tables */
                         if (zultra_block_prepare_cost_evaluation(pStream->state, pCompressor->in_data + HISTORY_SIZE - pCompressor->previous_block_size, pCompressor->previous_block_size + nInStart, nBlockSize) < 0 ||
                            zultra_block_evaluate_static_cost(&pStream->state->literalsEncoder, &pStream->state->offsetEncoder, &nStaticCost) < 0 ||
                            zultra_huffman_encoder_estimate_dynamic_codelens(&pStream->state->literalsEncoder) < 0 ||
@@ -308,6 +323,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
                         if (nStaticCost <= nDynamicCost)
                            nIsDynamic = 0;
 
+                        /* Write last block bit, and block type */
                         zultra_bitwriter_copy(&blockBitWriter, &pCompressor->bitwriter);
                         nIsFinal = (nDoFinalize && (nInStart + nBlockSize) >= nInDataSize && !pStream->avail_in) ? 1 : 0;
                         if (zultra_bitwriter_put_bits(&pCompressor->bitwriter, nIsFinal /* last block */, 1) < 0)
@@ -320,6 +336,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
                         if (!nError) {
                            int nPrevOffset = zultra_bitwriter_get_offset(&pCompressor->bitwriter);
 
+                           /* Compress block */
                            if (nPrevOffset < 0)
                               nCompressionResult = ZULTRA_ERROR_DST;
                            else
@@ -381,7 +398,6 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
                            }
 
                            nInStart += nBlockSize;
-
                         }
                      }
                   }
@@ -396,10 +412,11 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
                }
 
                if (!nError && nDoFinalize && !pStream->avail_in) {
-                  /* Pad bits to an integral number of bytes */
+                  /* All input data consumed, and the caller indicates this was the last of the data. Pad bits to an integral number of bytes */
                   if (zultra_bitwriter_flush_bits(&pCompressor->bitwriter) < 0)
                      nError = ZULTRA_ERROR_DST;
                   else {
+                     /* Flag that we are ready to emit the footer */
                      pCompressor->compression_state |= CSTATE_FINALIZED_COMPRESSION;
                   }
                }
@@ -429,6 +446,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
             if (pStream->avail_out) {
                size_t nMaxOutDataBytes = pStream->avail_out;
 
+               /* Copy compressed bytes to the caller */
                if (nMaxOutDataBytes > pCompressor->pending_out_bytes)
                   nMaxOutDataBytes = pCompressor->pending_out_bytes;
                memcpy(pStream->next_out, pCompressor->out_buffer + pCompressor->cur_out_index, nMaxOutDataBytes);
@@ -444,11 +462,13 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
       }
 
       if (!nError && !pCompressor->pending_frame_bytes && !pCompressor->pending_out_bytes && (pCompressor->compression_state & CSTATE_FINALIZED_COMPRESSION) && !(pCompressor->compression_state & CSTATE_FOOTER_EMITTED)) {
+         /* All input data consumed, and all compressed data blocks consumed by the caller. Emit the footer now, if the chosen format has one */
          int nFooterSize = zultra_frame_encode_footer(pCompressor->frame_buffer, 16, pStream->adler, pStream->total_in, pCompressor->flags);
 
          if (nFooterSize < 0)
             nError = ZULTRA_ERROR_COMPRESSION;
          else {
+            /* The footer bytes are now pending to be consumed by the caller */
             pCompressor->compression_state = (pCompressor->compression_state | CSTATE_FOOTER_EMITTED) & (~CSTATE_FINALIZED_COMPRESSION);
             pCompressor->cur_frame_index = 0;
             pCompressor->pending_frame_bytes = nFooterSize;
@@ -462,6 +482,7 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
             if (pStream->avail_out) {
                size_t nMaxFrameOutBytes = pStream->avail_out;
 
+               /* Copy header or footer bytes to the caller */
                if (nMaxFrameOutBytes > pCompressor->pending_frame_bytes)
                   nMaxFrameOutBytes = pCompressor->pending_frame_bytes;
                memcpy(pStream->next_out, pCompressor->frame_buffer + pCompressor->cur_frame_index, nMaxFrameOutBytes);
@@ -477,7 +498,19 @@ zultra_status_t zultra_stream_compress(zultra_stream_t *pStream, const int nDoFi
       }
    } while (!nError && pStream->avail_in && pStream->avail_out);
 
-   return nError;
+   if (nError)
+      return nError;
+   else {
+      if ((pCompressor->compression_state & CSTATE_FOOTER_EMITTED) && (pCompressor->compression_state & CSTATE_STREAM_ENDED) == 0 && !pCompressor->pending_frame_bytes) {
+         /* We emitted the footer, and it has completely been consumed by the caller. The compressed stream is done. */
+         pCompressor->compression_state |= CSTATE_STREAM_ENDED;
+         return ZULTRA_STREAM_END;
+      }
+      else {
+         /* Success, but there will be more data for the caller to consume */
+         return ZULTRA_OK;
+      }
+   }
 }
 
 /**
@@ -581,6 +614,6 @@ size_t zultra_memory_compress(const unsigned char *pInputData, size_t nInputSize
    nStatus = zultra_stream_compress(&strm, ZULTRA_FINALIZE);
    zultra_stream_end(&strm);
 
-   if (nStatus) return -1;
+   if (nStatus != ZULTRA_STREAM_END) return -1;
    return nMaxOutBufferSize - strm.avail_out;
 }

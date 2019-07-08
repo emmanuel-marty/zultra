@@ -52,11 +52,12 @@ typedef enum _zultra_stream_e
 #endif
 {
    ZULTRA_OK = 0,                          /**< Success */
-   ZULTRA_ERROR_SRC,                       /**< Error reading input */
-   ZULTRA_ERROR_DST,                       /**< Error reading output */
-   ZULTRA_ERROR_DICTIONARY,                /**< Error reading dictionary */
-   ZULTRA_ERROR_MEMORY,                    /**< Out of memory */
-   ZULTRA_ERROR_COMPRESSION,               /**< Internal compression error */
+   ZULTRA_STREAM_END,
+   ZULTRA_ERROR_SRC = -1,                  /**< Error reading input */
+   ZULTRA_ERROR_DST = -2,                  /**< Error reading output */
+   ZULTRA_ERROR_DICTIONARY = -3,           /**< Error reading dictionary */
+   ZULTRA_ERROR_MEMORY = -4,               /**< Out of memory */
+   ZULTRA_ERROR_COMPRESSION = -5,          /**< Internal compression error */
 } zultra_status_t;
 
 /* Compression flags */
