@@ -173,7 +173,7 @@ int do_compress(const char *pszInFilename, const char *pszOutFilename, const cha
          strm.avail_out = CHUNK_SIZE;
          strm.next_out = pOutBuffer;
          nStatus = zultra_stream_compress(&strm, flush);
-         if (nStatus != ZULTRA_OK) break;
+         if (nStatus != ZULTRA_OK && nStatus != ZULTRA_STREAM_END) break;
 
          nOutBytesToWrite = CHUNK_SIZE - strm.avail_out;
          if (nOutBytesToWrite) nHasProgress = 1;
@@ -185,10 +185,10 @@ int do_compress(const char *pszInFilename, const char *pszOutFilename, const cha
          }
       } while (strm.avail_out == 0);
 
-      if (!nStatus && strm.avail_in != 0)
+      if ((nStatus == ZULTRA_OK || nStatus == ZULTRA_STREAM_END) && strm.avail_in != 0)
          nStatus = ZULTRA_ERROR_COMPRESSION;
 
-      if (!nStatus && !flush && nHasProgress && strm.total_in && strm.total_out >= 1024) {
+      if ((nStatus == ZULTRA_OK || nStatus == ZULTRA_STREAM_END) && !flush && nHasProgress && strm.total_in && strm.total_out >= 1024) {
          fprintf(stdout, "\r%lld => %lld (%g %%)     \b\b\b\b\b", strm.total_in, strm.total_out, (double)(strm.total_out * 100.0 / strm.total_in));
          fflush(stdout);
       }
@@ -207,14 +207,15 @@ int do_compress(const char *pszInFilename, const char *pszOutFilename, const cha
    if (inStream)
       fclose(inStream);
 
-   if (nStatus) {
+   if (nStatus != ZULTRA_STREAM_END) {
       switch (nStatus) {
       case ZULTRA_ERROR_SRC: fprintf(stderr, "error reading '%s'\n", pszInFilename); break;
       case ZULTRA_ERROR_DST: fprintf(stderr, "error writing '%s'\n", pszOutFilename); break;
       case ZULTRA_ERROR_DICTIONARY: fprintf(stderr, "error reading dictionary '%s'\n", pszDictionaryFilename); break;
       case ZULTRA_ERROR_MEMORY: fprintf(stderr, "'%s': out of memory\n", pszInFilename); break;
       case ZULTRA_ERROR_COMPRESSION: fprintf(stderr, "'%s': internal compression error\n", pszInFilename); break;
-      case ZULTRA_OK: break;
+      case ZULTRA_OK: fprintf(stderr, "'%s': unfinished compression\n", pszInFilename); break;
+      case ZULTRA_STREAM_END: break;
       default: fprintf(stderr, "unknown compression error %d\n", nStatus); break;
       }
 
