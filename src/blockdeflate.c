@@ -264,8 +264,6 @@ static void zultra_optimize_matches_lwd(zultra_compressor_t *pCompressor, const 
       nCachedVarlenSize[i] = zultra_get_varlen_size(pCompressor, i);
 
    cost[nEndOffset] = 0;
-   best_match[nEndOffset].length = 0;
-   best_match[nEndOffset].offset = 0;
    nLastLiteralsOffset = nEndOffset;
 
    for (i = nEndOffset - 1; i != (nStartOffset - 1); i--) {
