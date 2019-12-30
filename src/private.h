@@ -51,7 +51,7 @@
 
 #define LEAVE_ALONE_MATCH_SIZE 40
 
-#define LAST_LITERALS 1
+#define LAST_LITERALS 0
 
 #define MAX_SPLITS 64
 

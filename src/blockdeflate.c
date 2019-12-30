@@ -263,12 +263,12 @@ static void zultra_optimize_matches_lwd(zultra_compressor_t *pCompressor, const 
    for (i = 0; i < LEAVE_ALONE_MATCH_SIZE; i++)
       nCachedVarlenSize[i] = zultra_get_varlen_size(pCompressor, i);
 
-   cost[nEndOffset - 1] = zultra_get_literal_size(pCompressor, pInWindow[nEndOffset - 1]);
-   best_match[nEndOffset - 1].length = 0;
-   best_match[nEndOffset - 1].offset = 0;
+   cost[nEndOffset] = 0;
+   best_match[nEndOffset].length = 0;
+   best_match[nEndOffset].offset = 0;
    nLastLiteralsOffset = nEndOffset;
 
-   for (i = nEndOffset - 2; i != (nStartOffset - 1); i--) {
+   for (i = nEndOffset - 1; i != (nStartOffset - 1); i--) {
       int nBestCost, nBestMatchLen, nBestMatchOffset;
 
       nBestCost = zultra_get_literal_size(pCompressor, pInWindow[i]) + cost[i + 1];

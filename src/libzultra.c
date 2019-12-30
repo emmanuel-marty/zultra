@@ -135,7 +135,7 @@ zultra_status_t zultra_stream_init(zultra_stream_t *pStream, const unsigned int 
       pCompressor->intervals = (unsigned int *)pStream->zalloc(pStream->opaque, nMaxWindowSize, sizeof(unsigned int));
 
       if (pCompressor->intervals) {
-         pCompressor->pos_data = (unsigned int *)pStream->zalloc(pStream->opaque, nMaxWindowSize, sizeof(unsigned int));
+         pCompressor->pos_data = (unsigned int *)pStream->zalloc(pStream->opaque, nMaxWindowSize + 1, sizeof(unsigned int));
 
          if (pCompressor->pos_data) {
             pCompressor->open_intervals = (unsigned int *)pStream->zalloc(pStream->opaque, (LCP_MAX + 1), sizeof(unsigned int));
@@ -144,7 +144,7 @@ zultra_status_t zultra_stream_init(zultra_stream_t *pStream, const unsigned int 
                pCompressor->match = (zultra_match_t *)pStream->zalloc(pStream->opaque, nMaxWindowSize * NMATCHES_PER_OFFSET, sizeof(zultra_match_t));
 
                if (pCompressor->match) {
-                  pCompressor->best_match = (zultra_match_t *)pStream->zalloc(pStream->opaque, nMaxWindowSize, sizeof(zultra_match_t));
+                  pCompressor->best_match = (zultra_match_t *)pStream->zalloc(pStream->opaque, nMaxWindowSize + 1, sizeof(zultra_match_t));
 
                   if (pCompressor->best_match) {
                      nResult = 0;
