@@ -79,7 +79,7 @@ int zultra_build_suffix_array(zultra_compressor_t *pCompressor, const unsigned c
     * saves us from having to build the inverse suffix array index, as the LCP is calculated without it using this method,
     * and the interval builder below doesn't need it either. */
    intervals[0] &= POS_MASK;
-   for (i = 1; i < nInWindowSize - 1; i++) {
+   for (i = 1; i < nInWindowSize; i++) {
       int nIndex = (int)(intervals[i] & POS_MASK);
       int nLen = PLCP[nIndex];
       if (nLen < MIN_MATCH_SIZE)
@@ -88,8 +88,6 @@ int zultra_build_suffix_array(zultra_compressor_t *pCompressor, const unsigned c
          nLen = MAX_MATCH_SIZE;
       intervals[i] = ((unsigned int)nIndex) | (((unsigned int)nLen) << LCP_SHIFT);
    }
-   if (i < nInWindowSize)
-      intervals[i] &= POS_MASK;
 
    /**
     * Build intervals for finding matches
@@ -270,7 +268,7 @@ void zultra_find_all_matches(zultra_compressor_t *pCompressor, const int nStartO
       int m;
 
       for (m = 0; m < NMATCHES_PER_OFFSET; m++) {
-         if (nMatches <= m || i > (nEndOffset - LAST_MATCH_OFFSET)) {
+         if (nMatches <= m) {
             pMatch->length = 0;
             pMatch->offset = 0;
          }
