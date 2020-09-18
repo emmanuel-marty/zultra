@@ -7,6 +7,8 @@
 
 #define ZLIB_INTERNAL
 #include "zlib.h"
+#include "libzultra.h"
+
 
 /* ===========================================================================
      Compresses the source buffer into the destination buffer. The level
@@ -30,6 +32,13 @@ int ZEXPORT compress2 (dest, destLen, source, sourceLen, level)
     int err;
     const uInt max = (uInt)-1;
     uLong left;
+
+    if (level == Z_BEST_COMPRESSION) {
+        size_t compressedSize = zultra_memory_compress(source, sourceLen, dest, *destLen, 0, 0);
+        if(compressedSize == -1) return Z_STREAM_ERROR;
+        *destLen = compressedSize;
+        return Z_OK;
+    }
 
     left = *destLen;
     *destLen = 0;
