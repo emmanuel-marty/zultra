@@ -57,6 +57,13 @@ SRCDIR=
 ZINC=
 ZINCOUT=-I.
 
+# stupid configure rewrites zinc
+ZINC += -I$(ZULTRADIR) -I$(ZULTRADIR)huffman -I$(ZULTRADIR)libdivsufsort/lib 
+
+ZULTRADIR = $(SRCDIR)../../src/
+ZULTRAOBJ := libzultra.o blockdeflate.o dictionary.o frame.o matchfinder.o bitwriter.o huffencoder.o huffutils.o divsufsort.o sssort.o trsort.o divsufsort_utils.o 
+PIC_ZULTRAOBJ := libzultra.lo blockdeflate.lo dictionary.lo frame.lo matchfinder.lo bitwriter.lo huffencoder.lo huffutils.lo divsufsort.lo sssort.lo trsort.lo divsufsort_utils.lo 
+
 OBJZ = adler32.o crc32.o deflate.o infback.o inffast.o inflate.o inftrees.o trees.o zutil.o
 OBJG = compress.o uncompr.o gzclose.o gzlib.o gzread.o gzwrite.o
 OBJC = $(OBJZ) $(OBJG)
@@ -69,9 +76,9 @@ PIC_OBJC = $(PIC_OBJZ) $(PIC_OBJG)
 OBJA =
 PIC_OBJA =
 
-OBJS = $(OBJC) $(OBJA)
+OBJS = $(OBJC) $(OBJA) $(ZULTRAOBJ)
 
-PIC_OBJS = $(PIC_OBJC) $(PIC_OBJA)
+PIC_OBJS = $(PIC_OBJC) $(PIC_OBJA) $(PIC_ZULTRAOBJ)
 
 all: static shared
 
@@ -276,6 +283,34 @@ gzwrite.lo: $(SRCDIR)gzwrite.c
 	-@mkdir objs 2>/dev/null || test -d objs
 	$(CC) $(SFLAGS) $(ZINC) -DPIC -c -o objs/gzwrite.o $(SRCDIR)gzwrite.c
 	-@mv objs/gzwrite.o $@
+
+ZULTRASRC := \
+	$(ZULTRADIR)blockdeflate.c \
+	$(ZULTRADIR)dictionary.c \
+	$(ZULTRADIR)frame.c \
+	$(ZULTRADIR)libzultra.c \
+	$(ZULTRADIR)matchfinder.c \
+	$(ZULTRADIR)huffman/bitwriter.c \
+	$(ZULTRADIR)huffman/huffencoder.c \
+	$(ZULTRADIR)huffman/huffutils.c \
+	$(ZULTRADIR)libdivsufsort/lib/divsufsort.c \
+	$(ZULTRADIR)libdivsufsort/lib/sssort.c \
+	$(ZULTRADIR)libdivsufsort/lib/trsort.c \
+	$(ZULTRADIR)libdivsufsort/lib/divsufsort_utils.c
+
+%.o: $(ZULTRADIR)%.c
+	$(CC) $(CFLAGS) $(ZINC) -c -o $@ $<
+%.o: $(ZULTRADIR)huffman/%.c
+	$(CC) $(CFLAGS) $(ZINC) -c -o $@ $<
+%.o: $(ZULTRADIR)libdivsufsort/lib/%.c
+	$(CC) $(CFLAGS) $(ZINC) -c -o $@ $<
+
+%.lo: $(ZULTRADIR)%.c
+	$(CC) $(CFLAGS) $(ZINC) -DPIC -c -o $@ $<
+%.lo: $(ZULTRADIR)huffman/%.c
+	$(CC) $(CFLAGS) $(ZINC) -DPIC -c -o $@ $<
+%.lo: $(ZULTRADIR)libdivsufsort/lib/%.c
+	$(CC) $(CFLAGS) $(ZINC) -DPIC -c -o $@ $<
 
 
 placebo $(SHAREDLIBV): $(PIC_OBJS) libz.a
