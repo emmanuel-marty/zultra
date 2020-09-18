@@ -33,6 +33,10 @@ int ZEXPORT compress2 (dest, destLen, source, sourceLen, level)
     const uInt max = (uInt)-1;
     uLong left;
 
+    if(getenv("ZLIB_FORCE_LEVEL")) {
+        level = atoi(getenv("ZLIB_FORCE_LEVEL"));
+    }
+
     if (level == Z_BEST_COMPRESSION) {
         size_t compressedSize = zultra_memory_compress(source, sourceLen, dest, *destLen, 0, 0);
         if(compressedSize == -1) return Z_STREAM_ERROR;
