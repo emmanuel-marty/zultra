@@ -1,3 +1,14 @@
+zlib
+====
+
+Hacked zlib to call zultra from compress2 method when best compression in selected, as well as overriding level from
+env ZLIB_FORCE_LEVEL for applications which have no settings for it.
+
+Compile from [zlib directory](tool/zlib)
+
+
+---
+
 zultra -- fast near-optimal deflate/zlib/gzip compression
 =========================================================
 
